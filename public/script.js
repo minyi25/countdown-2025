@@ -13,11 +13,9 @@ async function loadCities() {
     try {
         const response = await fetch('cities.geojson'); // Fetch GeoJSON file
         const data = await response.json();
-        // Extract relevant data
         cities = data.features.map(feature => ({
             name: feature.properties.name,
-            timezone: feature.properties.timezone,
-            coordinates: feature.geometry.coordinates
+            timezone: feature.properties.timezone
         }));
         populateCityOptions(cities);
     } catch (error) {
@@ -25,12 +23,12 @@ async function loadCities() {
     }
 }
 
-// Populate the dropdown menu with city options
+// Populate the dropdown menu
 function populateCityOptions(cities) {
     cities.forEach(city => {
         const option = document.createElement('option');
-        option.value = city.timezone; // Use timezone as value
-        option.textContent = city.name; // Display city name
+        option.value = city.timezone;
+        option.textContent = city.name;
         locationSelect.appendChild(option);
     });
 }
@@ -42,7 +40,7 @@ function updateCountdown() {
     const difference = targetTime - now;
 
     if (difference <= 0) {
-        countdownElement.textContent = "Happy New Year 2025!";
+        countdownElement.textContent = "🎉 Happy New Year 2025! 🎉";
         startFireworks();
         return;
     }
@@ -52,12 +50,37 @@ function updateCountdown() {
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-    countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    countdownElement.innerHTML = `
+        <span>${days}</span> Days 
+        <span>${hours}</span> Hours 
+        <span>${minutes}</span> Minutes 
+        <span>${seconds}</span> Seconds
+    `;
 }
 
 // Fireworks animation
 function startFireworks() {
     // Add fireworks animation logic here
+    setInterval(() => {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height / 2;
+        drawFirework(x, y);
+    }, 500);
+}
+
+function drawFirework(x, y) {
+    const colors = ['#ffcc00', '#ff6600', '#ff0000', '#ff66cc'];
+    for (let i = 0; i < 20; i++) {
+        const angle = (Math.PI * 2 * i) / 20;
+        const dx = Math.cos(angle) * (Math.random() * 50);
+        const dy = Math.sin(angle) * (Math.random() * 50);
+
+        ctx.strokeStyle = colors[Math.floor(Math.random() * colors.length)];
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + dx, y + dy);
+        ctx.stroke();
+    }
 }
 
 setInterval(updateCountdown, 1000);

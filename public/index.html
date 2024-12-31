@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Timer</title>
+    <title>New Year Countdown</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="countdown-container">
-        <h1>Countdown to 2025</h1>
-        <div id="countdown"></div>
-        <div>
-            <label for="location">Change Location:</label>
-            <select id="location">
+    <div class="container">
+        <h1 class="title">🎆 Countdown to New Year 2025 🎆</h1>
+        <div id="countdown" class="countdown"></div>
+        <div class="dropdown-container">
+            <label for="location" class="label">🎇 Change Location:</label>
+            <select id="location" class="dropdown">
                 <option value="auto">Detect Automatically</option>
             </select>
         </div>
     </div>
     <canvas id="fireworks"></canvas>
-    <a href="world-map.html">View World Map</a>
     <script src="script.js"></script>
 </body>
 </html>
