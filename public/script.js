@@ -8,10 +8,10 @@ canvas.height = window.innerHeight;
 let cities = [];
 let selectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-// Load GeoJSON data and populate the dropdown
+// Load GeoJSON data and populate the dropdown with major cities
 async function loadCities() {
     try {
-        const response = await fetch('cities.geojson'); // Fetch GeoJSON file
+        const response = await fetch('cities.geojson');
         const data = await response.json();
         cities = data.features.map(feature => ({
             name: feature.properties.name,
@@ -23,8 +23,8 @@ async function loadCities() {
     }
 }
 
-// Populate the dropdown menu
 function populateCityOptions(cities) {
+    locationSelect.innerHTML = '<option value="auto">Detect Automatically</option>';
     cities.forEach(city => {
         const option = document.createElement('option');
         option.value = city.timezone;
@@ -58,9 +58,7 @@ function updateCountdown() {
     `;
 }
 
-// Fireworks animation
 function startFireworks() {
-    // Add fireworks animation logic here
     setInterval(() => {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height / 2;
@@ -85,16 +83,12 @@ function drawFirework(x, y) {
 
 setInterval(updateCountdown, 1000);
 
-// Listen for dropdown changes
 locationSelect.addEventListener('change', () => {
     selectedTimezone = locationSelect.value === "auto"
         ? Intl.DateTimeFormat().resolvedOptions().timeZone
         : locationSelect.value;
+    updateCountdown(); // Update the countdown immediately after selecting a city
 });
 
-// Initialize the page
-async function init() {
-    await loadCities();
-}
-
-init();
+// Initialize
+loadCities();

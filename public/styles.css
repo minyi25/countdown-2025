@@ -68,14 +68,40 @@ body {
     z-index: 1;
 }
 
-/* Link back to world map (optional) */
-a {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    font-size: 1rem;
+/* Navigation button styling */
+.navigate-button {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background: #004e92;
     color: #ffcc00;
     text-decoration: none;
-    font-weight: bold;
-    text-shadow: 0 0 5px #ffcc00;
+    border: 2px solid #ffcc00;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #ffcc00;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.navigate-button:hover {
+    background: #ff6600;
+}
+
+/* World map container styling */
+.world-map-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: url('world-map.jpg') no-repeat center center/cover;
+}
+
+/* World map canvas */
+#world-map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
 }
