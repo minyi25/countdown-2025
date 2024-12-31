@@ -3,21 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Timer</title>
+    <title>Current Time by Country</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1 class="title">Countdown to New Year 2025 </h1>
-        <div id="countdown" class="countdown"></div>
+        <h1 class="title">🎆 Current Time Around the World 🎆</h1>
+        <div id="current-time" class="countdown">Loading current time...</div>
         <div class="dropdown-container">
-            <select id="location" class="dropdown">
+            <label for="country" class="label">🌍 Select a Country:</label>
+            <select id="country" class="dropdown">
                 <option value="auto">Detect Automatically</option>
+                <option value="America/New_York">United States</option>
+                <option value="Europe/London">United Kingdom</option>
+                <option value="Asia/Tokyo">Japan</option>
+                <option value="Australia/Sydney">Australia</option>
+                <option value="Asia/Kuala_Lumpur">Malaysia</option>
+                <!-- Add more countries as needed -->
             </select>
         </div>
+        <canvas id="fireworks"></canvas>
         <a href="world-map.html" class="navigate-button">🌍 View World Map</a>
     </div>
-    <canvas id="fireworks"></canvas>
     <script src="script.js"></script>
 </body>
 </html>
