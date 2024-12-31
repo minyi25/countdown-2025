@@ -5,20 +5,27 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Default to the user's detected timezone
+// Default to user's detected timezone
 let selectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 // Function to update the current time
 function updateCurrentTime() {
     try {
         const now = new Date(); // Get the current time
-        const localTime = moment.tz(now, selectedTimezone).format('HH:mm:ss'); // Format time in selected timezone
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: selectedTimezone,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+        });
+        const localTime = formatter.format(now); // Format time in the selected timezone
 
         // Display the formatted current time
         currentTimeElement.textContent = `Current Time: ${localTime}`;
 
         // Trigger fireworks at midnight
-        if (localTime === "00:00:00") {
+        if (localTime === "19:13:00") {
             startFireworks();
         }
     } catch (error) {
@@ -27,27 +34,79 @@ function updateCurrentTime() {
 }
 
 // Fireworks animation
-function startFireworks() {
-    setInterval(() => {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height / 2;
-        drawFirework(x, y);
-    }, 500);
+const particles = []; // Array to hold particles
+
+// Create a firework at a specific position
+function createFirework(x, y) {
+    const numParticles = 200; // Number of particles per firework
+    const colors = ['#ffcc00', '#ff6600', '#ff0000', '#66ccff', '#00ff00', '#ff33ff'];
+
+    for (let i = 0; i < numParticles; i++) {
+        const angle = Math.random() * Math.PI * 2; // Random direction
+        const speed = Math.random() * 5 + 2; // Random speed
+        particles.push({
+            x: x,
+            y: y,
+            dx: Math.cos(angle) * speed,
+            dy: Math.sin(angle) * speed,
+            radius: Math.random() * 3 + 1, // Random size
+            color: colors[Math.floor(Math.random() * colors.length)], // Random color
+            alpha: 1, // Full opacity
+            decay: Math.random() * 0.015 + 0.005, // Gradual fade-out
+            glitter: Math.random() > 0.8 // Add glitter effect
+        });
+    }
 }
 
-function drawFirework(x, y) {
-    const colors = ['#ffcc00', '#ff6600', '#ff0000', '#ff66cc'];
-    for (let i = 0; i < 20; i++) {
-        const angle = (Math.PI * 2 * i) / 20;
-        const dx = Math.cos(angle) * (Math.random() * 50);
-        const dy = Math.sin(angle) * (Math.random() * 50);
+// Update and draw particles
+function updateFireworks() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; // Fading background for trails
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.strokeStyle = colors[Math.floor(Math.random() * colors.length)];
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.dx; // Update position
+        p.y += p.dy;
+        p.alpha -= p.decay; // Reduce opacity
+        p.radius *= 0.98; // Gradual size reduction for realism
+
+        // Remove particle if completely faded
+        if (p.alpha <= 0 || p.radius <= 0) {
+            particles.splice(i, 1);
+            continue;
+        }
+
+        // Draw the particle with vibrant color and optional glitter
         ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + dx, y + dy);
-        ctx.stroke();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        const glitterEffect = p.glitter ? Math.random() * 0.5 : 0; // Random sparkle
+        ctx.fillStyle = `rgba(${hexToRgb(p.color)}, ${p.alpha + glitterEffect})`;
+        ctx.fill();
     }
+}
+
+// Convert HEX color to RGB
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.replace('#', ''), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `${r}, ${g}, ${b}`;
+}
+
+// Trigger random fireworks
+function startFireworks() {
+    setInterval(() => {
+        const x = Math.random() * canvas.width; // Random x-coordinate
+        const y = Math.random() * canvas.height / 2; // Random y-coordinate
+        createFirework(x, y);
+    }, 700);
+
+    function animate() {
+        updateFireworks();
+        requestAnimationFrame(animate); // Smooth animation
+    }
+    animate();
 }
 
 // Handle timezone changes when a country is selected
