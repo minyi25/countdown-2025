@@ -5,18 +5,24 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let selectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // Default to user's timezone
+// Default to the user's detected timezone
+let selectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-// Update the current time display
+// Function to update the current time
 function updateCurrentTime() {
-    const now = new Date();
-    const localTime = moment.tz(now, selectedTimezone).format('HH:mm:ss');
+    try {
+        const now = new Date(); // Get the current time
+        const localTime = moment.tz(now, selectedTimezone).format('HH:mm:ss'); // Format time in selected timezone
 
-    currentTimeElement.textContent = `Current Time: ${localTime}`;
+        // Display the formatted current time
+        currentTimeElement.textContent = `Current Time: ${localTime}`;
 
-    // Trigger fireworks at midnight
-    if (localTime === "00:00:00") {
-        startFireworks();
+        // Trigger fireworks at midnight
+        if (localTime === "00:00:00") {
+            startFireworks();
+        }
+    } catch (error) {
+        console.error("Error updating current time:", error);
     }
 }
 
@@ -44,16 +50,16 @@ function drawFirework(x, y) {
     }
 }
 
-// Detect user's location automatically or use selected timezone
+// Handle timezone changes when a country is selected
 countrySelect.addEventListener('change', () => {
     selectedTimezone = countrySelect.value === "auto"
         ? Intl.DateTimeFormat().resolvedOptions().timeZone
         : countrySelect.value;
 
-    updateCurrentTime(); // Update time immediately after selection
+    updateCurrentTime(); // Immediately update the time after selection
 });
 
-// Update current time every second
+// Update the current time every second
 setInterval(updateCurrentTime, 1000);
 
 // Initialize
